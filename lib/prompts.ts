@@ -50,7 +50,16 @@ STYLE VARIATION (mix naturally):
 - Shocking truth
 - Personal discovery
 - Call-out
+EXAMPLES (follow this level of specificity):
+- If your TikToks get under 200 views, you're doing this wrong
+- Posting daily but stuck at 300 views? Fix this mistake
+- Your videos aren’t growing because of this one habit
+- If you’re not getting views, stop doing this immediately
+- This is why your TikToks never pass 500 views
 
+IMPORTANT:
+- Hooks must sound like these examples
+- If output is generic, rewrite it to be more specific
 BAD:
 "Most people are doing this wrong"
 
