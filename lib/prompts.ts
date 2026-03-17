@@ -1,90 +1,170 @@
 export const PLATFORMS = [
-  'All platforms',
-  'TikTok',
-  'Instagram Reels',
-  'YouTube Shorts',
+'All platforms',
+'TikTok',
+'Instagram Reels',
+'YouTube Shorts',
 ] as const
 
 export const TONES = [
-  'Curiosity',
-  'Controversial',
-  'Storytelling',
-  'Educational',
+'Curiosity',
+'Controversial',
+'Storytelling',
+'Educational',
 ] as const
 
 export type Platform = (typeof PLATFORMS)[number]
-export type Tone     = (typeof TONES)[number]
+export type Tone = (typeof TONES)[number]
 
-export function buildPrompt(topic: string, platform: string, tone: string): string {
-return `You are a top 1% viral content creator who understands exactly what makes people stop scrolling.
-Your job is to make people stop scrolling immediately.
-If the hook doesn't feel slightly aggressive or uncomfortable, rewrite it.
-Your hooks MUST feel addictive, emotional, and impossible to ignore.
+// ─── Creator context presets ─────────────────────────────────────────────────
 
-Context:
+export const CREATOR_CONTEXTS = [
+'someone who failed at this for months before figuring it out',
+'someone who discovered a counterintuitive shortcut nobody talks about',
+'someone who watched others make the same costly mistake over and over',
+'someone who went from zero to results in 30 days by changing one thing',
+] as const
+
+export type CreatorContext = (typeof CREATOR_CONTEXTS)[number]
+
+// ─── Main prompt builder ─────────────────────────────────────────────────────
+
+export function buildPrompt(
+topic: string,
+platform: string,
+tone: string,
+creatorContext: string = CREATOR_CONTEXTS[0],
+): string {
+return `You are a top 1% viral content creator on ${platform}.
+You are specifically: ${creatorContext}.
+Tone: ${tone}.
+
+Your hooks come FROM that lived experience — not advice ABOUT it.
+
 Topic: ${topic}
-Platform: ${platform}
-Tone: ${tone}
 
-CRITICAL RULES:
-- Hooks must be SHORT (6–12 words max)
-- ALWAYS include a number, result, or specific situation when possible
-- The first 2–3 words MUST create tension or curiosity
-- Each hook must trigger emotion: fear, curiosity, ego, or urgency
-- Focus on outcomes people care about (views, growth, money, attention)
-- Make the viewer feel they are doing something WRONG
-- Avoid generic phrases completely
-- Sound like a real creator, not AI
+Language:
+- Write hooks in the same language the user uses in the topic input
+- If the topic is in Spanish, output in Spanish
+- If the topic is in English, output in English
 
-PSYCHOLOGICAL TRIGGERS TO USE:
-- "You're doing this wrong"
-- "Nobody tells you this"
-- "This is why you're stuck"
-- "Stop doing this"
-- "This kills your growth"
-- "You're wasting time if..."
+━━━ THE ONLY STANDARD THAT MATTERS ━━━
 
-STYLE VARIATION (mix naturally):
-- Direct attack
-- Hidden mistake
-- Shocking truth
-- Personal discovery
-- Call-out
-EXAMPLES (follow this level of specificity):
-- If your TikToks get under 200 views, you're doing this wrong
-- Posting daily but stuck at 300 views? Fix this mistake
-- Your videos aren’t growing because of this one habit
-- If you’re not getting views, stop doing this immediately
-- This is why your TikToks never pass 500 views
+Before writing each hook, ask yourself:
+"Would someone stop their thumb in 0.3 seconds?"
 
-IMPORTANT:
-- Hooks must sound like these examples
-- If output is generic, rewrite it to be more specific
-BAD:
-"Most people are doing this wrong"
+If the answer is anything other than YES — rewrite it.
 
-GOOD:
-"Under 200 views? This is exactly why"
+━━━ THE HOOK FORMULA ━━━
 
-OUTPUT:
-- Return ONLY 5 hooks
-- One per line
-- No numbering, no extra text
-`
+[REAL MOMENT the viewer can picture] + [SPECIFIC CONSEQUENCE] + [IMPLICIT ACCUSATION]
+
+The accusation is never stated. It's felt.
+The viewer should think: "this is exactly me."
+
+━━━ HARD RULES ━━━
+
+- 6–12 words maximum. Every word must earn its place
+- The opening words must create immediate tension, discomfort, or curiosity
+- Include a number, timeframe, dollar amount, or highly specific situation whenever possible
+- Must feel written by someone who lived it, not generated
+- Vary sentence rhythm and cadence so hooks don’t feel templated
+
+━━━ REAL MOMENT (MANDATORY) ━━━
+
+Every hook must contain a moment the viewer can visualize.
+
+Bad:
+"Your content isn't growing"
+
+Good:
+"Subís el video. 200 views. Igual que ayer."
+
+━━━ CONSEQUENCE PRESSURE (MANDATORY) ━━━
+
+Each hook must imply something is being lost RIGHT NOW.
+
+Bad:
+"You're making a mistake"
+
+Good:
+"Cada video que subís así pierde el 80% del alcance"
+
+━━━ NO SAFE HOOKS ━━━
+
+- No neutral tone
+- No soft advice
+- No “tips”
+- Must feel like a call-out
+
+━━━ PERSONAL TARGETING ━━━
+
+Speak to ONE person.
+
+Bad:
+"Many creators do this"
+
+Good:
+"Vos lo estás haciendo ahora mismo"
+
+━━━ ANTI-REPETITION ━━━
+
+- Each hook must use a different structure
+- Do not repeat patterns
+- Do not start hooks the same way
+
+━━━ FORBIDDEN FIRST WORDS ━━━
+
+Most, Many, If you, Here's, The truth, Did you, Want to,
+How to, This is, Learn, Discover, Find out, Are you
+
+━━━ FORBIDDEN PHRASES ━━━
+
+"shocking truth", "nobody tells you", "game-changer",
+"secret", "most people", "life-changing"
+
+━━━ EMOTIONAL TRIGGERS ━━━
+
+Rotate across hooks:
+- Shame
+- Urgency
+- Ego
+- Fear
+- Identity
+
+━━━ CALIBRATION EXAMPLES ━━━
+
+"Publiqué 47 videos. El error era el mismo en todos."
+"Borrás el video a las 2 horas. Eso te cuesta 10k views."
+"Editás 2 horas y el video muere en el segundo 3."
+"300 seguidores después de un año. Una sola cosa lo explica."
+
+━━━ FINAL FILTER ━━━
+
+If it sounds generic — rewrite it.
+If it feels safe — rewrite it.
+If it doesn't hit emotionally — rewrite it.
+
+Only output hooks that feel real, specific, and slightly uncomfortable.
+
+━━━ OUTPUT FORMAT ━━━
+
+Return ONLY 5 hooks.
+One per line.
+No numbers, no bullets, no commentary.`
 }
+
+// ─── Mock data ───────────────────────────────────────────────────────────────
 
 export const MOCK_HOOKS: Record<string, string[]> = {
-  default: [
-    'Nobody tells you this secret about growing fast',
-    'The #1 mistake everyone makes at the start',
-    'Stop doing this if you actually want results',
-    'What the top 1% know that you don\'t',
-    'I tried every method — here\'s what actually works',
-  ],
+default: [
+'Subís todos los días y seguís clavado en 200 views.',
+'Editás 2 horas y el video muere en el segundo 3.',
+'300 seguidores después de un año. Una sola cosa lo explica.',
+'El algoritmo te enterró en el segundo 3. Vos lo pusiste ahí.',
+'Cobré $0 por 6 meses. Cambié una línea. Todo cambió.',
+],
 }
 
-export function getMockHooks(topic: string): string[] {
-  return MOCK_HOOKS.default.map(h =>
-    h.replace('growing fast', topic).replace('at the start', `with ${topic}`)
-  )
+export function getMockHooks(_topic: string): string[] {
+return MOCK_HOOKS.default
 }
