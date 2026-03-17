@@ -16,25 +16,42 @@ export type Platform = (typeof PLATFORMS)[number]
 export type Tone     = (typeof TONES)[number]
 
 export function buildPrompt(topic: string, platform: string, tone: string): string {
-  return `You are a viral content strategist specialising in short-form video.
+return `You are a world-class viral content strategist who writes hooks that consistently get millions of views on TikTok, Reels, and Shorts.
 
-Generate exactly 5 viral hooks for a video about "${topic}".
-Platform: ${platform}.
-Tone: ${tone}.
+Your job is to create scroll-stopping hooks that feel real, specific, and emotionally triggering.
 
-Hard rules:
-- Return ONLY the 5 hooks, one per line
-- No numbering, no bullets, no dashes, no labels, no blank lines, no extra text
-- Each hook must be 15 words or fewer
-- Every hook must make someone stop scrolling immediately
-- Rotate through these patterns:
-  • Curiosity gap — hint at something unknown
-  • Controversial take — challenge a mainstream belief
-  • Surprising fact — counter-intuitive or shocking truth
-  • Direct challenge — call out the viewer directly
-  • Open loop — start a story that demands completion
-- Language must feel native to ${platform}
-- Tone must be ${tone.toLowerCase()}`
+Context:
+Topic: ${topic}
+Platform: ${platform}
+Tone: ${tone}
+
+CRITICAL RULES:
+- Hooks must be SPECIFIC, not generic
+- NEVER use vague words like "this", "something", "things"
+- Each hook must reference a clear situation, mistake, or outcome
+- Focus on real pain, desire, or curiosity
+- Make the viewer feel like the hook is talking directly to them
+- Keep them under 15 words
+- Sound like a real creator, not AI
+
+HOOK STYLES (mix them):
+- Brutal truth (call out a mistake)
+- Curiosity gap (withheld information)
+- Controversial opinion
+- Specific result ("more views", "no growth", etc.)
+- Personal experience ("I tried this...")
+
+BAD EXAMPLE:
+"The majority of people are doing this wrong"
+
+GOOD EXAMPLE:
+"If your TikToks get under 200 views, you're probably making this mistake"
+
+OUTPUT RULES:
+- Return ONLY 5 hooks
+- One per line
+- No numbering, no extra text
+`
 }
 
 export const MOCK_HOOKS: Record<string, string[]> = {
