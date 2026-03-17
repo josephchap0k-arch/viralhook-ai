@@ -16,9 +16,9 @@ export type Platform = (typeof PLATFORMS)[number]
 export type Tone     = (typeof TONES)[number]
 
 export function buildPrompt(topic: string, platform: string, tone: string): string {
-return `You are a world-class viral content strategist who writes hooks that consistently get millions of views on TikTok, Reels, and Shorts.
+return `You are a top 1% viral content creator who understands exactly what makes people stop scrolling.
 
-Your job is to create scroll-stopping hooks that feel real, specific, and emotionally triggering.
+Your hooks MUST feel addictive, emotional, and impossible to ignore.
 
 Context:
 Topic: ${topic}
@@ -26,28 +26,36 @@ Platform: ${platform}
 Tone: ${tone}
 
 CRITICAL RULES:
-- Hooks must be SPECIFIC, not generic
-- NEVER use vague words like "this", "something", "things"
-- Each hook must reference a clear situation, mistake, or outcome
-- Focus on real pain, desire, or curiosity
-- Make the viewer feel like the hook is talking directly to them
-- Keep them under 15 words
+- Hooks must be SHORT (6–12 words max)
+- The first 2–3 words MUST create tension or curiosity
+- Each hook must trigger emotion: fear, curiosity, ego, or urgency
+- Focus on outcomes people care about (views, growth, money, attention)
+- Make the viewer feel they are doing something WRONG
+- Avoid generic phrases completely
 - Sound like a real creator, not AI
 
-HOOK STYLES (mix them):
-- Brutal truth (call out a mistake)
-- Curiosity gap (withheld information)
-- Controversial opinion
-- Specific result ("more views", "no growth", etc.)
-- Personal experience ("I tried this...")
+PSYCHOLOGICAL TRIGGERS TO USE:
+- "You're doing this wrong"
+- "Nobody tells you this"
+- "This is why you're stuck"
+- "Stop doing this"
+- "This kills your growth"
+- "You're wasting time if..."
 
-BAD EXAMPLE:
-"The majority of people are doing this wrong"
+STYLE VARIATION (mix naturally):
+- Direct attack
+- Hidden mistake
+- Shocking truth
+- Personal discovery
+- Call-out
 
-GOOD EXAMPLE:
-"If your TikToks get under 200 views, you're probably making this mistake"
+BAD:
+"Most people are doing this wrong"
 
-OUTPUT RULES:
+GOOD:
+"Under 200 views? This is exactly why"
+
+OUTPUT:
 - Return ONLY 5 hooks
 - One per line
 - No numbering, no extra text
