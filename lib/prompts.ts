@@ -17,7 +17,8 @@ export type Tone     = (typeof TONES)[number]
 
 export function buildPrompt(topic: string, platform: string, tone: string): string {
 return `You are a top 1% viral content creator who understands exactly what makes people stop scrolling.
-
+Your job is to make people stop scrolling immediately.
+If the hook doesn't feel slightly aggressive or uncomfortable, rewrite it.
 Your hooks MUST feel addictive, emotional, and impossible to ignore.
 
 Context:
@@ -27,6 +28,7 @@ Tone: ${tone}
 
 CRITICAL RULES:
 - Hooks must be SHORT (6–12 words max)
+- ALWAYS include a number, result, or specific situation when possible
 - The first 2–3 words MUST create tension or curiosity
 - Each hook must trigger emotion: fear, curiosity, ego, or urgency
 - Focus on outcomes people care about (views, growth, money, attention)
