@@ -52,7 +52,22 @@ export function readUser(): User | null {
 export function writeUser(user: User): void {
   localStorage.setItem(USER_KEY, JSON.stringify(user))
 }
-
+export function createUserFromSupabase(id: string, email: string, name: string): User {
+  const existing = readUser()
+  if (existing && existing.id === id) return existing
+  const user: User = {
+    id,
+    email,
+    name,
+    plan: 'free',
+    generationsToday: 0,
+    generationsTotal: 0,
+    lastResetDate: todayStr(),
+    createdAt: new Date().toISOString(),
+  }
+  writeUser(user)
+  return user
+}
 export function createUser(email: string, name: string): User {
   const existing = readUser()
   if (existing && existing.email === email) throw new Error('Email already registered.')
