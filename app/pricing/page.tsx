@@ -1,12 +1,15 @@
+Pricing page · TSX
+Copiar
+
 'use client'
-
+ 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { readUser, upgradeToPro } from '@/lib/storage'
+import { readUser } from '@/lib/storage'
 import Navbar, { Footer } from '@/components/Navbar'
-import Spinner from '@/components/Spinner'
-
+ 
+const CHECKOUT_URL = 'https://viralhook-ai.lemonsqueezy.com/checkout/buy/a6fbdd22-960f-43e2-8926-cddb4960f8cd'
+ 
 const FREE_FEATURES = [
   '5 generations per day',
   'All 4 platforms',
@@ -14,7 +17,7 @@ const FREE_FEATURES = [
   'Hook history (last 50)',
   'Copy to clipboard',
 ]
-
+ 
 const PRO_FEATURES = [
   'Unlimited generations',
   'All 4 platforms',
@@ -24,38 +27,28 @@ const PRO_FEATURES = [
   'Priority generation speed',
   'Early access to new features',
 ]
-
+ 
 const FAQ = [
-  { q: 'Is Pro really a one-time payment?',  a: 'Yes. Pay $29 once and use ViralHook AI forever. No subscriptions, no renewals, ever.' },
-  { q: 'How many hooks on the free plan?',   a: '5 generations per day on the free plan. Each gives you 5 hooks.' },
-  { q: "What's the difference with Pro?",    a: 'Unlimited daily generations, priority speed, and early access to new features.' },
-  { q: 'Can I get a refund?',                a: '30-day money-back guarantee. No questions asked.' },
+  { q: 'Can I cancel anytime?',            a: 'Yes. Cancel anytime from your account — no questions asked. You keep access until the end of your billing period.' },
+  { q: 'How many hooks on the free plan?', a: '5 generations per day on the free plan. Each gives you 5 hooks.' },
+  { q: "What's the difference with Pro?",  a: 'Unlimited daily generations, priority speed, and early access to new features.' },
+  { q: 'Can I get a refund?',              a: '30-day money-back guarantee. No questions asked.' },
 ]
-
+ 
 export default function PricingPage() {
-  const router = useRouter()
-  const [loading,    setLoading]    = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isPro,      setIsPro]      = useState(false)
-
+ 
   useEffect(() => {
     const user = readUser()
     setIsLoggedIn(!!user)
     setIsPro(user?.plan === 'pro')
   }, [])
-
-  async function handleUpgrade() {
-    const user = readUser()
-    if (!user) { router.push('/login'); return }
-    if (user.plan === 'pro') { router.push('/dashboard'); return }
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 900))
-    upgradeToPro(user)
-    setIsPro(true)
-    setLoading(false)
-    router.push('/dashboard?upgraded=true')
+ 
+  function handleUpgrade() {
+    window.location.href = CHECKOUT_URL
   }
-
+ 
   return (
     <div style={{
       minHeight: '100vh',
@@ -72,9 +65,9 @@ export default function PricingPage() {
               </Link>
             </>
       } />
-
+ 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '80px 24px 80px', flex: 1 }}>
-
+ 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(99,102,241,.1)', border: '1px solid rgba(99,102,241,.24)', borderRadius: 100, padding: '6px 16px', marginBottom: 28 }}>
@@ -90,13 +83,13 @@ export default function PricingPage() {
             Start free. Upgrade when ready.
           </h1>
           <p style={{ color: '#64748b', fontSize: 17, margin: '0 auto', maxWidth: 440 }}>
-            No subscriptions. One-time payment for Pro. Use it forever.
+            Free forever. Go Pro for unlimited hooks at $9/month.
           </p>
         </div>
-
+ 
         {/* Plan cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20, marginBottom: 80 }}>
-
+ 
           {/* Free */}
           <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 24, padding: '36px 32px', display: 'flex', flexDirection: 'column' }}>
             <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 1.5 }}>Free</p>
@@ -118,7 +111,7 @@ export default function PricingPage() {
               {isLoggedIn ? 'Go to dashboard' : 'Get started free'}
             </Link>
           </div>
-
+ 
           {/* Pro */}
           <div style={{ background: 'rgba(99,102,241,.07)', border: '1px solid rgba(99,102,241,.3)', borderRadius: 24, padding: '36px 32px', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 0 0 1px rgba(99,102,241,.1), 0 24px 64px rgba(99,102,241,.15)' }}>
             <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: 12, fontWeight: 700, padding: '5px 18px', borderRadius: 100, whiteSpace: 'nowrap' }}>
@@ -126,10 +119,10 @@ export default function PricingPage() {
             </div>
             <p style={{ margin: '0 0 4px', fontSize: 12, fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase', letterSpacing: 1.5 }}>Pro</p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 6 }}>
-              <span style={{ fontSize: 52, fontWeight: 800, letterSpacing: -2, background: 'linear-gradient(135deg,#fff,#a5b4fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>$29</span>
-              <span style={{ fontSize: 15, color: '#64748b' }}>one-time</span>
+              <span style={{ fontSize: 52, fontWeight: 800, letterSpacing: -2, background: 'linear-gradient(135deg,#fff,#a5b4fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>$9</span>
+              <span style={{ fontSize: 15, color: '#64748b' }}>/month</span>
             </div>
-            <p style={{ margin: '0 0 28px', fontSize: 14, color: '#64748b' }}>Pay once. Use forever. No renewals.</p>
+            <p style={{ margin: '0 0 28px', fontSize: 14, color: '#64748b' }}>Cancel anytime. No commitments.</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 11, flex: 1 }}>
               {PRO_FEATURES.map(f => (
                 <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, color: '#c7d2fe' }}>
@@ -139,32 +132,27 @@ export default function PricingPage() {
             </ul>
             <button
               onClick={handleUpgrade}
-              disabled={loading || isPro}
+              disabled={isPro}
               style={{
                 padding: '15px',
-                background: (loading || isPro) ? 'rgba(99,102,241,.3)' : 'linear-gradient(135deg,#6366f1,#4f46e5)',
+                background: isPro ? 'rgba(99,102,241,.3)' : 'linear-gradient(135deg,#6366f1,#4f46e5)',
                 border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700,
-                cursor: (loading || isPro) ? 'not-allowed' : 'pointer',
+                cursor: isPro ? 'not-allowed' : 'pointer',
                 fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                boxShadow: (loading || isPro) ? 'none' : '0 6px 24px rgba(99,102,241,.45)',
+                boxShadow: isPro ? 'none' : '0 6px 24px rgba(99,102,241,.45)',
                 transition: 'transform .2s',
               }}
-              onMouseEnter={e => { if (!loading && !isPro) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
+              onMouseEnter={e => { if (!isPro) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)' }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)' }}
             >
-              {loading
-                ? <><Spinner /> Processing…</>
-                : isPro
-                ? "✦ You're on Pro"
-                : '⚡ Upgrade to Pro — $29'
-              }
+              {isPro ? "✦ You're on Pro" : '⚡ Get Pro — $9/month'}
             </button>
             <p style={{ textAlign: 'center', margin: '12px 0 0', fontSize: 12, color: '#334155' }}>
-              30-day money-back guarantee
+              30-day money-back guarantee · Cancel anytime
             </p>
           </div>
         </div>
-
+ 
         {/* FAQ */}
         <div>
           <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: -1, margin: '0 0 32px', textAlign: 'center', color: '#f1f5f9' }}>
@@ -180,7 +168,7 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
-
+ 
       <Footer />
     </div>
   )
