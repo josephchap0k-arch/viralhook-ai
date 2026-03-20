@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-
+ 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-
+ 
   if (code) {
     const cookieStore = cookies()
     const supabase = createServerClient(
@@ -24,6 +24,8 @@ export async function GET(request: Request) {
     )
     await supabase.auth.exchangeCodeForSession(code)
   }
-
-  return NextResponse.redirect(`${origin}/dashboard`)
+ 
+  const next = searchParams.get('next') ?? '/dashboard'
+  return NextResponse.redirect(`${origin}${next}`)
 }
+ 

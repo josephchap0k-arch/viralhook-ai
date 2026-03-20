@@ -1,26 +1,32 @@
 'use client'
-
+ 
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase'
 import { Brand } from '@/components/Navbar'
 import Spinner from '@/components/Spinner'
-
+ 
+type Mode = 'login' | 'register' | 'forgot'
+ 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState('')
-
-  async function handleGoogle() {
+  const [mode, setMode]         = useState<Mode>('login')
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState('')
+  const [success, setSuccess]   = useState('')
+ 
+  function reset() {
     setError('')
+    setSuccess('')
+  }
+ 
+  async function handleLogin() {
+    reset()
     setLoading(true)
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) setError(error.message)
     } catch {
       setError('Something went wrong. Please try again.')
@@ -28,7 +34,79 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
-
+ 
+  async function handleRegister() {
+    reset()
+    setLoading(true)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      })
+      if (error) setError(error.message)
+      else setSuccess('Check your email to confirm your account.')
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+ 
+  async function handleForgot() {
+    reset()
+    setLoading(true)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      })
+      if (error) setError(error.message)
+      else setSuccess('Password reset link sent! Check your email.')
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+ 
+  function handleSubmit() {
+    if (mode === 'login')    handleLogin()
+    if (mode === 'register') handleRegister()
+    if (mode === 'forgot')   handleForgot()
+  }
+ 
+  const titles: Record<Mode, string> = {
+    login:    'Welcome back',
+    register: 'Create your account',
+    forgot:   'Reset your password',
+  }
+  const subtitles: Record<Mode, string> = {
+    login:    'Sign in to start generating viral hooks',
+    register: 'Join thousands of creators using ViralHook AI',
+    forgot:   'Enter your email and we\'ll send you a reset link',
+  }
+  const btnLabels: Record<Mode, string> = {
+    login:    'Sign In',
+    register: 'Create Account',
+    forgot:   'Send Reset Link',
+  }
+ 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '14px 16px',
+    background: 'rgba(255,255,255,.04)',
+    border: '1px solid rgba(255,255,255,.10)',
+    borderRadius: 12,
+    color: '#f1f5f9',
+    fontSize: 15,
+    fontFamily: 'inherit',
+    outline: 'none',
+    boxSizing: 'border-box',
+    transition: 'border-color .2s',
+  }
+ 
   return (
     <main style={{
       minHeight: '100vh',
@@ -37,24 +115,29 @@ export default function LoginPage() {
       padding: '40px 20px',
     }}>
       <div style={{ width: '100%', maxWidth: 440 }}>
+ 
+        {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', justifyContent: 'center', marginBottom: 28 }}>
             <Brand />
           </Link>
           <h1 style={{ margin: '0 0 10px', fontSize: 26, fontWeight: 800, letterSpacing: -.8, color: '#f1f5f9' }}>
-            Welcome to ViralHook AI
+            {titles[mode]}
           </h1>
           <p style={{ margin: 0, color: '#64748b', fontSize: 15 }}>
-            Sign in to start generating viral hooks
+            {subtitles[mode]}
           </p>
         </div>
-
+ 
+        {/* Card */}
         <div style={{
           background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)',
           borderRadius: 24, padding: '36px 32px',
           boxShadow: '0 24px 72px rgba(0,0,0,.5)',
-          display: 'flex', flexDirection: 'column', gap: 16,
+          display: 'flex', flexDirection: 'column', gap: 14,
         }}>
+ 
+          {/* Error */}
           {error && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
@@ -64,38 +147,113 @@ export default function LoginPage() {
               <span>⚠</span><span>{error}</span>
             </div>
           )}
-
+ 
+          {/* Success */}
+          {success && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              background: 'rgba(52,211,153,.07)', border: '1px solid rgba(52,211,153,.17)',
+              borderRadius: 11, padding: '11px 15px', color: '#34d399', fontSize: 13,
+            }}>
+              <span>✓</span><span>{success}</span>
+            </div>
+          )}
+ 
+          {/* Email */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}>Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={inputStyle}
+              onFocus={e => (e.target.style.borderColor = 'rgba(139,92,246,.5)')}
+              onBlur={e  => (e.target.style.borderColor = 'rgba(255,255,255,.10)')}
+            />
+          </div>
+ 
+          {/* Password (not shown in forgot mode) */}
+          {mode !== 'forgot' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}>Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                style={inputStyle}
+                onFocus={e => (e.target.style.borderColor = 'rgba(139,92,246,.5)')}
+                onBlur={e  => (e.target.style.borderColor = 'rgba(255,255,255,.10)')}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+              />
+            </div>
+          )}
+ 
+          {/* Forgot password link (only in login mode) */}
+          {mode === 'login' && (
+            <div style={{ textAlign: 'right', marginTop: -6 }}>
+              <button
+                onClick={() => { setMode('forgot'); reset() }}
+                style={{ background: 'none', border: 'none', color: '#8b5cf6', fontSize: 13, cursor: 'pointer', padding: 0, fontFamily: 'inherit' }}
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
+ 
+          {/* Submit button */}
           <button
-            onClick={handleGoogle}
+            onClick={handleSubmit}
             disabled={loading}
             style={{
+              marginTop: 4,
               padding: '16px',
-              background: loading ? 'rgba(255,255,255,.05)' : 'rgba(255,255,255,.08)',
-              border: '1px solid rgba(255,255,255,.12)',
-              borderRadius: 14, color: '#f1f5f9', fontSize: 15, fontWeight: 600,
+              background: loading ? 'rgba(139,92,246,.3)' : 'linear-gradient(135deg,#7c3aed,#6d28d9)',
+              border: 'none',
+              borderRadius: 14, color: '#fff', fontSize: 15, fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
               fontFamily: 'inherit',
+              transition: 'opacity .2s',
             }}
           >
-            {loading ? (
-              <><Spinner /> Connecting…</>
-            ) : (
-              <>
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Sign in with Google
+            {loading ? <><Spinner /> Loading…</> : btnLabels[mode]}
+          </button>
+ 
+          {/* Mode switcher */}
+          <div style={{ textAlign: 'center', marginTop: 4, fontSize: 13, color: '#475569' }}>
+            {mode === 'login' && (
+              <>Don't have an account?{' '}
+                <button onClick={() => { setMode('register'); reset() }}
+                  style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, padding: 0 }}>
+                  Sign up
+                </button>
               </>
             )}
-          </button>
-
-          <p style={{ textAlign: 'center', margin: '8px 0 0', fontSize: 12, color: '#334155', lineHeight: 1.6 }}>
-            5 free hooks per day · No credit card required.
-          </p>
+            {mode === 'register' && (
+              <>Already have an account?{' '}
+                <button onClick={() => { setMode('login'); reset() }}
+                  style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, padding: 0 }}>
+                  Sign in
+                </button>
+              </>
+            )}
+            {mode === 'forgot' && (
+              <>Remember it?{' '}
+                <button onClick={() => { setMode('login'); reset() }}
+                  style={{ background: 'none', border: 'none', color: '#8b5cf6', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, padding: 0 }}>
+                  Back to sign in
+                </button>
+              </>
+            )}
+          </div>
+ 
+          {mode === 'login' && (
+            <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: 12, color: '#334155', lineHeight: 1.6 }}>
+              5 free hooks per day · No credit card required.
+            </p>
+          )}
         </div>
       </div>
     </main>
